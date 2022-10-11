@@ -133,7 +133,7 @@ const CustomTable = ({ data, params, onChangeParams }) => {
       </Paper>
       <ModalWindow
         open={dataRow.open}
-        handleClose={() => setDataRow({ open: false, data: {} })}
+        handleClose={() => setDataRow({ ...dataRow, open: false })}
         data={dataRow.data}
       />
     </Box>
