@@ -110,12 +110,12 @@ const CustomTable = ({ data, params, onChangeParams }) => {
                       hover
                       sx={{ cursor: "pointer" }}
                     >
-                      <TableCell component="th">
+                      <TableCell component="th" sx={{ width: "15%" }}>
                         {new Date(row.created_at).toISOString().split('T')[0]}
                       </TableCell>
-                      <TableCell align="left">{row.state}</TableCell>
-                      <TableCell align="left">{row.number}</TableCell>
-                      <TableCell align="left">{row.title}</TableCell>
+                      <TableCell align="left" sx={{ width: "15%" }}>{row.state}</TableCell>
+                      <TableCell align="left" sx={{ width: "15%" }}>{row.number}</TableCell>
+                      <TableCell align="left" sx={{ width: "55%" }}>{row.title}</TableCell>
                     </TableRow>
                   );
                 })}
