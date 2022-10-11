@@ -47,6 +47,7 @@ const CustomTableHead = ({ order, orderBy, onRequestSort }) => {
           <TableCell
             key={headCell.id}
             sortDirection={orderBy === headCell.numeric ? order : false}
+            sx={{ fontWeight: "600" }}
           >
             {headCell.numeric ? (
               <TableSortLabel
