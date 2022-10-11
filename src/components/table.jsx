@@ -104,9 +104,10 @@ const CustomTable = ({ data, params, onChangeParams }) => {
               {!!data && data.map((row) => {
                   return (
                     <TableRow
-                      hover
-                      onClick={() => handleClick(row)}
                       key={row.id}
+                      onClick={() => handleClick(row)}
+                      hover
+                      sx={{ cursor: "pointer" }}
                     >
                       <TableCell component="th">
                         {new Date(row.created_at).toISOString().split('T')[0]}

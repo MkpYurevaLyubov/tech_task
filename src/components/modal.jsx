@@ -27,16 +27,22 @@ const titleList = ["id", "title", "body", "user", "created_at", "url", "state", 
 
 const ModalWindow = ({ open, handleClose, data }) => {
   const getInfo = (value) => {
+    let text = data[value];
+
     if (value === "user") {
-      return data[value]?.login;
+      text = data[value]?.login;
     }
 
     if (value === "assignees") {
       const userList = data[value]?.map((user) => user?.login);
-      return userList?.length > 0 ? userList.join(", ") : "-";
+      text = userList?.length > 0 ? userList.join(", ") : "-";
     }
 
-    return data[value] ?? "-";
+    if (value === "url") {
+      return (<a href={text} target="_blank">{text}</a> );
+    }
+
+    return (<p>{text ?? "-"}</p>);
   };
 
   return (
@@ -55,7 +61,7 @@ const ModalWindow = ({ open, handleClose, data }) => {
             {titleList.map((el, idx) =>
               <Box key={idx} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography sx={styleForH1}>{el}</Typography>
-                <p>{getInfo(el)}</p>
+                {getInfo(el)}
               </Box>
             )}
           </Box>
