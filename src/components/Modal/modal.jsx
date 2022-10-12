@@ -18,7 +18,7 @@ const ModalWindow = ({open, handleClose, data}) => {
       text = userList?.length > 0 ? userList.join(", ") : "-";
     }
 
-    if (value === "body") {
+    if (value === "body" && data[value]?.length > 400) {
       style.push("overflow-height");
     }
 
