@@ -20,11 +20,11 @@ const headCells = [
   },
   {
     id: 'state',
-    numeric: true,
+    numeric: false,
     label: 'State',
   },
   {
-    id: 'number',
+    id: 'id',
     numeric: true,
     label: '#',
   },
@@ -93,8 +93,8 @@ const CustomTable = ({ data, params, onChangeParams }) => {
   return (
     <Box sx={{ width: "90%", margin: "100px auto" }}>
       <Paper>
-        <TableContainer>
-          <Table>
+        <TableContainer sx={{ height: "600px" }}>
+          <Table stickyHeader>
             <CustomTableHead
               order={order}
               orderBy={orderBy}
@@ -114,7 +114,7 @@ const CustomTable = ({ data, params, onChangeParams }) => {
                         {new Date(row.created_at).toISOString().split('T')[0]}
                       </TableCell>
                       <TableCell align="left" sx={{ width: "15%" }}>{row.state}</TableCell>
-                      <TableCell align="left" sx={{ width: "15%" }}>{row.number}</TableCell>
+                      <TableCell align="left" sx={{ width: "15%" }}>{row.id}</TableCell>
                       <TableCell align="left" sx={{ width: "55%" }}>{row.title}</TableCell>
                     </TableRow>
                   );
