@@ -1,0 +1,50 @@
+.p30 {
+  padding: 30px !important;
+}
+
+.p30-top {
+  padding: 30px 30px 10px !important;
+}
+
+.p30-bottom {
+  padding: 10px 30px 30px !important;
+}
+
+.modal-block-info {
+  padding: 8px 0;
+  border-bottom: 1px solid gray;
+}
+
+.modal-block-info:nth-child(1) {
+  padding-top: 0;
+}
+
+.modal-block-info:nth-last-child(1) {
+  padding-bottom: 0;
+}
+
+.modal-block-info-h1 {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+
+.modal-block-info-text {
+  max-height: 70px;
+  overflow-wrap: break-word;
+  margin: 0;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.link {
+  color: black;
+}
+
+.link:hover {
+  color: #5a5a5a;
+}
+
+.overflow-height {
+  overflow-y: scroll;
+}
