@@ -1,21 +1,8 @@
 import * as React from 'react';
-import Backdrop from '@mui/material/Backdrop';
+import Button from "@mui/material/Button";
 import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Fade from '@mui/material/Fade';
+import {Dialog, DialogActions, DialogContent} from "@mui/material";
 import Typography from '@mui/material/Typography';
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 900,
-  bgcolor: 'background.paper',
-  border: '2px solid gray',
-  boxShadow: 24,
-  p: 4,
-};
 
 const styleForH1 = {
   marginRight: "16px",
@@ -25,42 +12,49 @@ const styleForH1 = {
 
 const titleList = ["id", "title", "body", "user", "created_at", "url", "state", "assignee", "assignees"];
 
-const ModalWindow = ({ open, handleClose, data }) => {
+const ModalWindow = ({open, handleClose, data}) => {
   const getInfo = (value) => {
-    if (value === "user") {
-      return data[value]?.login;
+    let text = data[value];
+
+    if (value === "user" || value === "assignee") {
+      text = data[value]?.login;
     }
 
     if (value === "assignees") {
       const userList = data[value]?.map((user) => user?.login);
-      return userList?.length > 0 ? userList.join(", ") : "-";
+      text = userList?.length > 0 ? userList.join(", ") : "-";
     }
 
-    return data[value] ?? "-";
+    if (value === "url") {
+      return (<a href={text} target="_blank" rel="noreferrer">{text}</a>);
+    }
+
+    return (<p>{text ?? "-"}</p>);
   };
 
   return (
     <div>
-      <Modal
+      <Dialog
         open={open}
         onClose={handleClose}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
+        sx={{ padding: "30px" }}
+        maxWidth="md"
       >
-        <Fade in={open}>
-          <Box sx={style}>
+        <DialogContent sx={{ padding: "30px" }}>
+          <Box>
             {titleList.map((el, idx) =>
               <Box key={idx} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography sx={styleForH1}>{el}</Typography>
-                <p>{getInfo(el)}</p>
+                {getInfo(el)}
               </Box>
             )}
+
           </Box>
-        </Fade>
-      </Modal>
+        </DialogContent>
+        <DialogActions sx={{ padding: "30px" }}>
+          <Button variant="contained" onClick={handleClose}>Close Modal</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

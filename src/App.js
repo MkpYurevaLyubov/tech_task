@@ -1,34 +1,45 @@
 import React from "react";
 import { useEffect, useState} from "react";
-import { Octokit } from "octokit";
 import CustomTable from "./components/table";
 
 const App = () => {
-  const octokit = new Octokit({
-    auth: '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'
-  });
   const [issues, setIssues] = useState([]);
+  const [issuesInfo, setIssuesInfo] = useState({
+    total_count: 0,
+    page: 0,
+    per_page: 10,
+    order: "asc",
+    orderBy: "created",
+  });
+  const { per_page, page, order, orderBy } = issuesInfo;
 
   useEffect( () => {
     fetchData();
-  }, []);
+  }, [page, per_page, order, orderBy]);
 
   const fetchData = async () => {
     try {
-      const result = await octokit.request("GET /repos/{owner}/{repo}/issues", {
-        owner: "angular",
-        repo: "angular",
-      });
-      setIssues(result.data);
+      const res = await fetch(
+        `https://api.github.com/search/issues?q=angular/angular&per_page=${per_page}&page=${page + 1}&sort=${orderBy}&order=${order}`
+      );
+      const result = await res.json();
+      setIssues(result.items);
+      setIssuesInfo({ ...issuesInfo, total_count: result.total_count });
     } catch (e) {
       console.log(e);
     }
   };
 
+  const handleChangeParams = (value) => {
+    setIssuesInfo(prevState => ({ ...prevState, ...value }));
+  }
+
   return (
-    <div>
-      <CustomTable data={issues} />
-    </div>
+    <CustomTable
+      data={issues}
+      params={issuesInfo}
+      onChangeParams={handleChangeParams}
+    />
   );
 };
 

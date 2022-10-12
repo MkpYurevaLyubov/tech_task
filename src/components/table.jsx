@@ -12,48 +12,19 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Paper from '@mui/material/Paper';
 import ModalWindow from "./modal";
 
-const descendingComparator = (a, b, orderBy) => {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-};
-
-const getComparator = (order, orderBy) => {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-};
-
-const stableSort = (array, comparator) => {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-};
-
 const headCells = [
   {
-    id: 'created_at',
+    id: 'created',
     numeric: true,
     label: 'Created',
   },
   {
     id: 'state',
-    numeric: true,
+    numeric: false,
     label: 'State',
   },
   {
-    id: 'number',
+    id: 'id',
     numeric: true,
     label: '#',
   },
@@ -76,6 +47,7 @@ const CustomTableHead = ({ order, orderBy, onRequestSort }) => {
           <TableCell
             key={headCell.id}
             sortDirection={orderBy === headCell.numeric ? order : false}
+            sx={{ fontWeight: "600" }}
           >
             {headCell.numeric ? (
               <TableSortLabel
@@ -97,17 +69,13 @@ const CustomTableHead = ({ order, orderBy, onRequestSort }) => {
   );
 }
 
-const CustomTable = ({ data }) => {
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('created_at');
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+const CustomTable = ({ data, params, onChangeParams }) => {
   const [dataRow, setDataRow] = useState({ open: false, data: {} });
+  const { total_count, page, per_page, order, orderBy } = params;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
+    onChangeParams({'order': isAsc ? 'desc' : 'asc', 'orderBy': property})
   };
 
   const handleClick = (data) => {
@@ -115,19 +83,18 @@ const CustomTable = ({ data }) => {
   };
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    onChangeParams({ 'page': newPage });
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    onChangeParams({ 'per_page': event.target.value, 'page': 0 });
   };
 
   return (
     <Box sx={{ width: "90%", margin: "100px auto" }}>
       <Paper>
-        <TableContainer>
-          <Table>
+        <TableContainer sx={{ height: "600px" }}>
+          <Table stickyHeader>
             <CustomTableHead
               order={order}
               orderBy={orderBy}
@@ -135,21 +102,20 @@ const CustomTable = ({ data }) => {
               rowCount={data?.length}
             />
             <TableBody>
-              {!!data && stableSort(data, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
+              {!!data && data.map((row) => {
                   return (
                     <TableRow
-                      hover
+                      key={row.id}
                       onClick={() => handleClick(row)}
-                      key={row.number}
+                      hover
+                      sx={{ cursor: "pointer" }}
                     >
-                      <TableCell component="th">
+                      <TableCell component="th" sx={{ width: "15%" }}>
                         {new Date(row.created_at).toISOString().split('T')[0]}
                       </TableCell>
-                      <TableCell align="left">{row.state}</TableCell>
-                      <TableCell align="left">{row.number}</TableCell>
-                      <TableCell align="left">{row.title}</TableCell>
+                      <TableCell align="left" sx={{ width: "15%" }}>{row.state}</TableCell>
+                      <TableCell align="left" sx={{ width: "15%" }}>{row.id}</TableCell>
+                      <TableCell align="left" sx={{ width: "55%" }}>{row.title}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -159,8 +125,8 @@ const CustomTable = ({ data }) => {
         <TablePagination
           rowsPerPageOptions={[10, 20, 30, 50, 100]}
           component="div"
-          count={data?.length}
-          rowsPerPage={rowsPerPage}
+          count={total_count}
+          rowsPerPage={per_page}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
@@ -168,7 +134,7 @@ const CustomTable = ({ data }) => {
       </Paper>
       <ModalWindow
         open={dataRow.open}
-        handleClose={() => setDataRow({ open: false, data: {} })}
+        handleClose={() => setDataRow({ ...dataRow, open: false })}
         data={dataRow.data}
       />
     </Box>
